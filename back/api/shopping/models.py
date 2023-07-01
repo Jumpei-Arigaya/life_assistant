@@ -1,3 +1,82 @@
 from django.db import models
+from django.contrib.auth.models import User
 
-# Create your models here.
+
+class Industry(models.Model):
+    """販売店の種類"""
+
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Shop(models.Model):
+    """販売店"""
+
+    name = models.CharField(max_length=255)
+    shop_branch = models.CharField(max_length=255, null=True, blank=True)
+    industry = models.ForeignKey(Industry, on_delete=models.PROTECT)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.shop_branch}"
+
+
+class Product(models.Model):
+    """商品名"""
+
+    name = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return self.name
+
+
+class Receipt(models.Model):
+    """領収書"""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    payee = models.ForeignKey(Shop, on_delete=models.PROTECT)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    receipt_date = models.DateField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.receipt_date} - {self.payee.name}"
+
+
+class ReceiptDetail(models.Model):
+    """領収書の明細"""
+
+    receipt = models.ForeignKey(
+        Receipt, on_delete=models.CASCADE, related_name="details"
+    )
+    product = models.ForeignKey(Product, on_delete=models.PROTECT)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return (
+            f"{self.receipt.receipt_date} - {self.receipt.payee.name} - {self.product}"
+        )
+
+
+class Shopping(models.Model):
+    """買い物データ"""
+
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    shopping_date = models.DateField()
+    payee = models.ForeignKey(Shop, on_delete=models.PROTECT)
+    receipt = models.ManyToManyField(Receipt)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return ", ".join([str(receipt.payee) for receipt in self.receipt.all()])
