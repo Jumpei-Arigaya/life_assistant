@@ -1,0 +1,9 @@
+myvenv
+db.sqlite3
+.vscode
+__pycache__
+*.pyc
+.DS_Store
+media
+.env
+settings_local.py
