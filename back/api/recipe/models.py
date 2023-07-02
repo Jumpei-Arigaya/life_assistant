@@ -10,6 +10,9 @@ class RecipeLargeCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class RecipeMediumCategory(models.Model):
     """楽天レシピAPIの中カテゴリ"""
@@ -20,6 +23,9 @@ class RecipeMediumCategory(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    def __str__(self):
+        return f"{self.name}"
+
 
 class RecipeSmallCategory(models.Model):
     """楽天レシピAPIの小カテゴリ"""
@@ -29,6 +35,9 @@ class RecipeSmallCategory(models.Model):
     parent_category = models.ForeignKey(RecipeMediumCategory, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
 
 
 class Recipe(models.Model):
@@ -52,3 +61,6 @@ class Recipe(models.Model):
     recipe_rank = models.CharField(max_length=3)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def __str__(self):
+        return f"{self.name}"
