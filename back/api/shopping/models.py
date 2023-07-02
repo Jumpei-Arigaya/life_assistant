@@ -41,14 +41,17 @@ class Receipt(models.Model):
     """領収書"""
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
-    payee = models.ForeignKey(Shop, on_delete=models.PROTECT)
+    shop = models.ForeignKey(Shop, on_delete=models.PROTECT)
     amount = models.DecimalField(max_digits=10, decimal_places=2)
+    shopping = models.ForeignKey(
+        "Shopping", on_delete=models.SET_NULL, null=True, blank=True
+    )
     receipt_date = models.DateField()
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f"{self.receipt_date} - {self.payee.name}"
+        return f"{self.receipt_date} - {self.shop.name}"
 
 
 class ReceiptDetail(models.Model):
@@ -64,7 +67,7 @@ class ReceiptDetail(models.Model):
 
     def __str__(self):
         return (
-            f"{self.receipt.receipt_date} - {self.receipt.payee.name} - {self.product}"
+            f"{self.receipt.receipt_date} - {self.receipt.shop.name} - {self.product}"
         )
 
 
@@ -73,10 +76,9 @@ class Shopping(models.Model):
 
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     shopping_date = models.DateField()
-    payee = models.ForeignKey(Shop, on_delete=models.PROTECT)
-    receipt = models.ManyToManyField(Receipt)
+    shop = models.ForeignKey(Shop, on_delete=models.PROTECT)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return ", ".join([str(receipt.payee) for receipt in self.receipt.all()])
+        return f"{self.shopping_date} - {self.user.username} - {self.shop.name}"
