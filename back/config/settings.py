@@ -37,6 +37,8 @@ INSTALLED_APPS = [
     "django.contrib.sessions",
     "django.contrib.messages",
     "django.contrib.staticfiles",
+    "api.core",  # 追加
+    "api.recipe",  # 追加
     "api.shopping",  # 追加
     "rest_framework",  # 追加
     "corsheaders",  # 追加
