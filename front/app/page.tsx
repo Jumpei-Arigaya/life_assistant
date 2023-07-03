@@ -1,13 +1,15 @@
-"use client";
-import NextLink from "next/link";
-import { Button, Link as MuiLink } from "@mui/material";
+import SignIn from "@/features/accounts/components/SiginIn";
 
-const Home = () => {
+const Page: () => Promise<JSX.Element> = async () => {
   return (
-    <NextLink href="/user_profile" passHref>
-      <Button variant="contained">ユーザープロフィール</Button>
-    </NextLink>
+    <>
+      <header className="py-4"></header>
+
+      <main>
+        <SignIn />
+      </main>
+    </>
   );
 };
 
-export default Home;
+export default Page;
