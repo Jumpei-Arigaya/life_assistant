@@ -1,8 +1,10 @@
+from rest_framework.authentication import BaseAuthentication
+from rest_framework import exceptions
+from rest_framework.authentication import get_authorization_header
+
 import time
 import jwt
 from config.settings import SECRET_KEY
-from rest_framework.authentication import BaseAuthentication
-from rest_framework import exceptions
 from api.user.models import User
 
 
@@ -37,4 +39,42 @@ def generate_jwt(user):
             "exp": timestamp,
         },
         SECRET_KEY,
-    ).decode("utf-8")
+    )
+
+
+class JWTAuthentication(BaseAuthentication):
+    """一般アカウント権限"""
+
+    keyword = "JWT"
+    model = None
+
+    def authenticate(self, request):
+        auth = get_authorization_header(request).split()
+        print(auth)
+        if not auth or auth[0].lower() != self.keyword.lower().encode():
+            return None
+
+        if len(auth) == 1:
+            msg = "Authorization 無効"
+            raise exceptions.AuthenticationFailed(msg)
+        elif len(auth) > 2:
+            msg = "Authorization 無効 スペースはない"
+            raise exceptions.AuthenticationFailed(msg)
+
+        try:
+            jwt_token = auth[1]
+            jwt_info = jwt.decode(jwt_token, SECRET_KEY, algorithms=["HS256"])
+            userid = jwt_info.get("userid")
+            try:
+                user = User.objects.get(pk=userid)
+                user.is_authenticated = True
+                return (user, jwt_token)
+            except:
+                msg = "ユーザー存在しません"
+                raise exceptions.AuthenticationFailed(msg)
+        except jwt.ExpiredSignatureError:
+            msg = "tokenはタイムアウトしました"
+            raise exceptions.AuthenticationFailed(msg)
+
+    def authenticate_header(self, request):
+        pass

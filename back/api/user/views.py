@@ -1,6 +1,8 @@
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.permissions import IsAuthenticated
 
+from api.user.utils.auth import JWTAuthentication
 from .utils.auth import NormalAuthentication
 
 
@@ -13,3 +15,16 @@ class Login(APIView):
 
     def post(self, request, *args, **kwargs):
         return Response({"token": request.user})
+
+
+class Something(APIView):
+    authentication_classes = [
+        JWTAuthentication,
+    ]
+    # ログインユーザーのみアクセスを許可
+    permission_classes = [
+        IsAuthenticated,
+    ]
+
+    def get(self, request, *args, **kwargs):
+        return Response({"data": "中身です"})
