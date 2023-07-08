@@ -1,4 +1,4 @@
-import SignIn from "@/features/accounts/components/SiginIn";
+import Login from "@/features/Login";
 
 const Page: () => Promise<JSX.Element> = async () => {
   return (
@@ -6,7 +6,7 @@ const Page: () => Promise<JSX.Element> = async () => {
       <header className="py-4"></header>
 
       <main>
-        <SignIn />
+        <Login />
       </main>
     </>
   );

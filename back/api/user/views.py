@@ -15,7 +15,28 @@ class Login(APIView):
     ]
 
     def post(self, request, *args, **kwargs):
-        return Response({"token": request.user}, status=status.HTTP_200_OK)
+        """JWTライブラリを使用したログイン認証処理
+
+        Args:
+            request (object): フォームに入力されたユーザー情報
+        """
+        try:
+            response = Response({"token": request.user}, status=status.HTTP_200_OK)
+            response.set_cookie(
+                "token",
+                request.user,
+                httponly=True,
+                secure=True,
+                max_age=60 * 60 * 24,
+            )
+        except Exception as e:
+            print(str(e))
+            return Response(
+                {"error": "Something went wrong"},
+                status=status.HTTP_500_INTERNAL_SERVER_ERROR,
+            )
+
+        return response
 
 
 class Something(APIView):

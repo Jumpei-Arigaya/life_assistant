@@ -13,9 +13,7 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { User } from "../types/type";
-import { useState } from "react";
-import { useAccounts } from "../hooks/Accounts";
+import { useLoginForm } from "../../hooks/useLoginForm";
 
 function Copyright(props: any) {
   return (
@@ -36,31 +34,8 @@ function Copyright(props: any) {
 }
 
 const theme = createTheme();
-export default function SignIn() {
-  const [user, setUser] = useState<User>({});
-  const { login } = useAccounts();
-
-  /**
-   * サインインボタン実行時にログイン処理を行う
-   *
-   * @param event イベント
-   */
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    login(user);
-  };
-
-  /**
-   * フォームの内容が変更されたらユーザー情報を更新する
-   *
-   * @param e フォームに入力されたユーザー情報
-   */
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [e.target.name]: e.target.value,
-    }));
-  };
+export default function LoginForm() {
+  const { handleSubmit, handleChange, user } = useLoginForm();
 
   return (
     <ThemeProvider theme={theme}>
@@ -94,6 +69,7 @@ export default function SignIn() {
               label="username"
               name="username"
               autoComplete="username"
+              value={user.username}
               autoFocus
               onChange={handleChange}
             />
@@ -105,6 +81,7 @@ export default function SignIn() {
               label="Password"
               type="password"
               id="password"
+              value={user.password}
               autoComplete="current-password"
               onChange={handleChange}
             />
