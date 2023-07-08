@@ -13,6 +13,9 @@ import LockOutlinedIcon from "@mui/icons-material/LockOutlined";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { User } from "../types/type";
+import { useState } from "react";
+import { useAccounts } from "../hooks/Accounts";
 
 function Copyright(props: any) {
   return (
@@ -34,13 +37,29 @@ function Copyright(props: any) {
 
 const theme = createTheme();
 export default function SignIn() {
+  const [user, setUser] = useState<User>({});
+  const { login } = useAccounts();
+
+  /**
+   * サインインボタン実行時にログイン処理を行う
+   *
+   * @param event イベント
+   */
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get("email"),
-      password: data.get("password"),
-    });
+    login(user);
+  };
+
+  /**
+   * フォームの内容が変更されたらユーザー情報を更新する
+   *
+   * @param e フォームに入力されたユーザー情報
+   */
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setUser((prevUser) => ({
+      ...prevUser,
+      [e.target.name]: e.target.value,
+    }));
   };
 
   return (
@@ -71,11 +90,12 @@ export default function SignIn() {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="username"
+              name="username"
+              autoComplete="username"
               autoFocus
+              onChange={handleChange}
             />
             <TextField
               margin="normal"
@@ -86,6 +106,7 @@ export default function SignIn() {
               type="password"
               id="password"
               autoComplete="current-password"
+              onChange={handleChange}
             />
             <FormControlLabel
               control={<Checkbox value="remember" color="primary" />}

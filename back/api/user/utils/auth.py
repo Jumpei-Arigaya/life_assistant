@@ -12,8 +12,8 @@ class NormalAuthentication(BaseAuthentication):
     """一般アカウント権限認証"""
 
     def authenticate(self, request):
-        username = request._request.POST.get("username")
-        password = request._request.POST.get("password")
+        username = request.data["user"]["username"]
+        password = request.data["user"]["password"]
         user_obj = User.objects.filter(username=username).first()
         if not user_obj:
             raise exceptions.AuthenticationFailed("認証失敗")
