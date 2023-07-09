@@ -16,7 +16,7 @@ export const useLoginForm = () => {
     try {
       const response = await login(user);
       if (response.ok) {
-        router.push("/");
+        router.push("/select_recipe");
       } else {
         alert(
           "ログインに失敗しました。ユーザー名かパスワードが間違っているか、アカウントが登録されていません。"
