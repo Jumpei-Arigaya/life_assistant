@@ -1,23 +1,12 @@
-import { User } from "../types/type";
-
 /**
- * ログインAPIを呼び出す
- *
- * @param user フォームに入力されたユーザー情報
- * @returns
+ * レシピ取得APIを呼び出す
  */
-export const login = async (user: User) => {
+export const getRecipe = async () => {
   const SERVER_URL = process.env.NEXT_PUBLIC_SERVER_URL;
 
-  const url = `${SERVER_URL}/user/login/`;
+  const url = `${SERVER_URL}/recipe/recipe_list/`;
   const response = await fetch(url, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      user,
-    }),
+    method: "GET",
   });
 
   return response;

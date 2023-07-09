@@ -1,54 +1,31 @@
-import { login } from "../api/getRecipe";
-import { User } from "../types/type";
-import { useRouter } from "next/navigation";
-import { useState } from "react";
+// import { login } from "../api/getRecipe";
+// import { User } from "../types/type";
+// import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { getRecipe } from "../api/getRecipe";
 
-export const useLoginForm = () => {
-  const [user, setUser] = useState<User>({});
-  const router = useRouter();
+export const useSelectRecipeDialog = () => {
+  const [recipe, setRecipe] = useState<any[]>([]);
+
+  useEffect(() => {
+    setRecipeList();
+  }, []);
 
   /**
-   * ログイン
-   *
-   * @param user フォームに入力されたユーザー情報
+   * レシピリストをセットする
    */
-  const userLogin = async (user: User) => {
+  const setRecipeList = async () => {
     try {
-      const response = await login(user);
+      const response = await getRecipe();
       if (response.ok) {
-        router.push("/");
-      } else {
-        alert(
-          "ログインに失敗しました。ユーザー名かパスワードが間違っているか、アカウントが登録されていません。"
-        );
+        const data = await response.json();
+        setRecipe(data);
       }
     } catch (error) {
+      setRecipe([]);
       console.log(error);
-      alert("ログイン処理中にエラーが発生しました。");
     }
   };
 
-  /**
-   * サインインボタン実行時にログイン処理を実行する
-   *
-   * @param event イベント
-   */
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    userLogin(user);
-  };
-
-  /**
-   * フォームの内容が変更されたらユーザー情報を更新する
-   *
-   * @param e フォームに入力されたユーザー情報
-   */
-  const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUser((prevUser) => ({
-      ...prevUser,
-      [event.target.name]: event.target.value,
-    }));
-  };
-
-  return { handleSubmit, handleChange, user };
+  return { recipe };
 };
