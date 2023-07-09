@@ -1,4 +1,4 @@
-import { login } from "../api/login";
+import { login } from "../api/getRecipe";
 import { User } from "../types/type";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -16,7 +16,7 @@ export const useLoginForm = () => {
     try {
       const response = await login(user);
       if (response.ok) {
-        router.push("/select_recipe");
+        router.push("/");
       } else {
         alert(
           "ログインに失敗しました。ユーザー名かパスワードが間違っているか、アカウントが登録されていません。"
